@@ -5,10 +5,10 @@ import PropTypes from 'prop-types';
 export default function Loader() {
     return (<div>
         <Audio
-            height = "150"
-            width = "500"
+            height = "100"
+            width = "100"
             radius = "9"
-            color = '#006c4d'
+            color = '#d9ff00'
             ariaLabel = 'three-dots-loading'     
             wrapperStyle
             wrapperClass

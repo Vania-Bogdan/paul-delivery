@@ -45,12 +45,14 @@ export default function Phonebook() {
     };
 
     return (
-            <Book>
-                <h1>Phonebook</h1>
+        <Book>
+            <Heading>
+                <h1>Phonebook</h1>{isLoaderActive && <Loader />}
+            </Heading>
                 <AddForm onSubmit={onAddContact} />
                 <h2>Contacts</h2>
                 <Filter filter={filter} onSetFilter={onSetFilter} />
-                {isLoaderActive && <Loader />}
+                
                 {contacts.length === 0 ?
                 <p>No contacts found</p> : 
                 <div>
@@ -69,8 +71,13 @@ const Book = styled.div`
     font-size: 20px;
     font-weight: 400;
     line-height: 24px;
-    margin: 100px auto;
+    margin: 20px auto;
     padding: 20px;
     width: 500px;
     background-color: #00cab9;
+`
+const Heading = styled.div`
+display: flex;
+align-items: center;
+justify-content: space-between;
 `
