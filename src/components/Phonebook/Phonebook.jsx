@@ -77,6 +77,7 @@ const Book = styled.div`
     background-color: #00cab9;
 `
 const Heading = styled.div`
+height: 100px;
 display: flex;
 align-items: center;
 justify-content: space-between;
