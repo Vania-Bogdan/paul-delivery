@@ -1,53 +1,62 @@
 import AddForm from "./AddForm/AddForm";
 import ContactList from "./ContactList/ContactList";
 import Filter from "./Filter/Filter";
+import Loader from "./Loader/Loader";
 
 import styled from "styled-components";
 
 import { useSelector, useDispatch } from "react-redux";
 
-import { addContact, removeContact } from "redux/contacts/con-slice";
-import { setFilter } from "redux/filter/filter-slice";
+import { useEffect } from "react";
 
-import { getFilteredContacts } from "redux/contacts/con-selectors";
-import { getFilter } from "redux/filter/filter-selectors";
+import { fetchContacts, addContact, deleteContact } from "redux/contacts/contacts-operation";
+import {setFilter} from "redux/filter/filter-slice";
+
+import { getFilter, visibleContacts, getLoaderStatus} from '../../redux/selectors';
 
 export default function Phonebook() {
+    
+    const contacts = useSelector(visibleContacts)
+    const filter = useSelector(getFilter)
+    const isLoaderActive = useSelector(getLoaderStatus);
 
     const dispatch = useDispatch()
 
+    useEffect(() => {
+        dispatch(fetchContacts()) 
+    }, [dispatch])
+
     const onAddContact = (payload) => {
         const isContact = contacts.find(item => item.name.toLowerCase() === payload.name.toLowerCase());
-            if (isContact) {
-                alert(`${payload.name} is already in contact`);
-            } else {
-                dispatch(addContact(payload))
-            }
+        if (isContact) {
+            alert(`${payload.name} is already in contact`);
+            return
+        }
+        const action = addContact(payload);
+        dispatch(action)
     }
 
     const onRemoveContact = (payload) => {
-        dispatch(removeContact(payload))
+        dispatch(deleteContact(payload))
     }
 
-    const onSetFilter = ({ target } ) => {
-        dispatch(setFilter(target.value))
-    }
-
-    const contacts = useSelector(getFilteredContacts)
-    const filter = useSelector(getFilter)
+    const onSetFilter = (event) => {
+        dispatch(setFilter(event.target.value))
+    };
 
     return (
             <Book>
-                    <h1>Phonebook</h1>
-                    <AddForm onSubmit={onAddContact} />
-                    <h2>Contacts</h2>
-                    <Filter filter={filter} onSetFilter={onSetFilter} />
-                    {contacts.length === 0 ?
-                    <p>No contacts found</p> : 
-                    <div>
-                        <ContactList contacts={contacts} onRemoveContact={onRemoveContact} />
-                    </div>
-                    }
+                <h1>Phonebook</h1>
+                <AddForm onSubmit={onAddContact} />
+                <h2>Contacts</h2>
+                <Filter filter={filter} onSetFilter={onSetFilter} />
+                {isLoaderActive && <Loader />}
+                {contacts.length === 0 ?
+                <p>No contacts found</p> : 
+                <div>
+                    <ContactList contacts={contacts} onRemoveContact={onRemoveContact} />
+                </div>
+                }
             </Book>
         );
 };
