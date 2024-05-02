@@ -1,8 +1,8 @@
 {
-  "name": "goit-react-hw-07-phonebook",
+  "name": "paul-delivery",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://vania-bogdan.github.io/goit-react-hw-07-phonebook/",
+  "homepage": "https://vania-bogdan.github.io/paul-delivery/",
   "dependencies": {
     "@reduxjs/toolkit": "^1.8.5",
     "@testing-library/jest-dom": "^5.16.3",
