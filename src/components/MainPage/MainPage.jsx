@@ -8,18 +8,9 @@ import { useSelector, useDispatch } from 'react-redux';
 
 import React, { useState, useEffect } from 'react';
 
-import {
-  fetchContacts,
-  addContact,
-  deleteContact,
-  editContact,
-} from 'redux/contacts/contacts-operation';
+import { fetchContacts } from 'redux/contacts/contacts-operation';
 
-import {
-  getFilter,
-  visibleContacts,
-  getLoaderStatus,
-} from '../../redux/selectors';
+import { visibleContacts } from '../../redux/selectors';
 
 export default function MainPage() {
   const products = useSelector(visibleContacts);

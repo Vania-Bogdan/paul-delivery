@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 import styled from 'styled-components';
-// import { editContact } from 'redux/contacts/contacts-operation';
 
 const CurrentList = ({ products, curGroup }) => {
   const [productList, setProductList] = useState([]);
