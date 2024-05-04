@@ -18,3 +18,8 @@ export const deleteContact = async id => {
     const { data: result } = await instance.delete(`/${id}`);
     return result;
 };
+
+export const editContact = async ({ id, quantity }) => {
+    const { data: result } = await instance.put(`/${id}`, quantity);
+    return result;
+};

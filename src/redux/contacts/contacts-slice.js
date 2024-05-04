@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-import { fetchContacts, addContact, deleteContact } from "./contacts-operation";
+import { fetchContacts, addContact, deleteContact, editContact } from "./contacts-operation";
 
 const initialState = {
     items: [],
@@ -45,6 +45,24 @@ const contactsSlice = createSlice({
             store.items = store.items.filter(item => item.id !== payload);
         },
         [deleteContact.rejected]: (store, { payload }) => {
+            store.loading = false;
+            store.error = payload;
+        },
+        [editContact.pending]: store => {
+            store.loading = true;
+            store.error = null;
+        },
+        [editContact.fulfilled]: (store, { payload }) => {
+            store.loading = false;
+            // Оновити значення поля у відповідному елементі
+            store.items = store.items.map(item => {
+                if (item.id === payload.id) {
+                    return payload;
+                }
+                return item;
+            });
+        },
+        [editContact.rejected]: (store, { payload }) => {
             store.loading = false;
             store.error = payload;
         },
