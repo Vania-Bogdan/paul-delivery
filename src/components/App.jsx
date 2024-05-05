@@ -1,4 +1,4 @@
-import Phonebook from './Phonebook/Phonebook';
+// import Phonebook from './Phonebook/Phonebook';
 import MainPage from './MainPage/MainPage';
 
 export const App = () => {
