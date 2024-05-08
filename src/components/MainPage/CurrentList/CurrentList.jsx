@@ -5,22 +5,44 @@ import styled from 'styled-components';
 
 const CurrentList = ({ products, curGroup }) => {
   const [productList, setProductList] = useState([]);
+  let curUrl = 'https://631de489789612cd07b2575a.mockapi.io/';
+  switch (curGroup) {
+    case 'W1':
+      curUrl += 'W1_products';
+      break;
+    case 'W2':
+      curUrl += 'W2_products';
+      break;
+    default:
+      curUrl += 'W2_products';
+  }
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(curUrl);
+      return response.data;
+    } catch (error) {
+      console.error('Помилка під час виконання запиту GET:', error);
+      return []; // Повертаємо порожній масив у випадку помилки
+    }
+  };
 
   useEffect(() => {
-    const filteredProducts = products.filter(({ group }) => group === curGroup);
-    setProductList(filteredProducts);
-  }, [products, curGroup]);
+    const fetchData = async () => {
+      const products = await fetchProducts();
+      setProductList(products);
+    };
+    fetchData();
+  }, [curGroup]);
 
-  const lalala = (id, q, boo) => {
+  const editProductQuantity = (id, q, isToAdd) => {
     const itemId = id;
-    const newQ = boo ? q + 1 : q - 1;
+    const newQ = isToAdd ? q + 1 : q - 1;
 
     const updatedData = {
       quantity: newQ,
     };
 
-    const url =
-      'https://631de489789612cd07b2575a.mockapi.io/contacts/' + itemId;
+    const url = curUrl + '/' + itemId;
 
     axios
       .put(url, updatedData)
@@ -46,14 +68,14 @@ const CurrentList = ({ products, curGroup }) => {
     <>
       <button onClick={handleReload}>Save</button>
       <Ul>
-        {productList.map(({ name, quantity, group, id }) => (
+        {productList.map(({ name, quantity, id }) => (
           <li key={id}>
-            <button onClick={() => lalala(id, quantity, false)}>
-              Зменшити кількість
+            <p>{id + '. ' + name + ': ' + quantity + ' Im from group '}</p>
+            <button onClick={() => editProductQuantity(id, quantity, false)}>
+              -
             </button>
-            <p>{id + '. ' + name + ': ' + quantity}</p>
-            <button onClick={() => lalala(id, quantity, true)}>
-              Збільшити кількість
+            <button onClick={() => editProductQuantity(id, quantity, true)}>
+              +
             </button>
           </li>
         ))}
