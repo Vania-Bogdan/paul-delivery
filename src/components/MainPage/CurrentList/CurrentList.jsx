@@ -16,23 +16,25 @@ const CurrentList = ({ products, curGroup }) => {
     default:
       curUrl += 'W2_products';
   }
-  const fetchProducts = async () => {
-    try {
-      const response = await axios.get(curUrl);
-      return response.data;
-    } catch (error) {
-      console.error('Помилка під час виконання запиту GET:', error);
-      return []; // Повертаємо порожній масив у випадку помилки
-    }
-  };
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get(curUrl);
+        return response.data;
+      } catch (error) {
+        console.error('Помилка під час виконання запиту GET:', error);
+        return []; // Повертаємо порожній масив у випадку помилки
+      }
+    };
+
     const fetchData = async () => {
       const products = await fetchProducts();
       setProductList(products);
     };
+
     fetchData();
-  }, [curGroup]);
+  }, [curGroup, curUrl]);
 
   const editProductQuantity = (id, q, isToAdd) => {
     const itemId = id;
