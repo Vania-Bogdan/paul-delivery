@@ -77,7 +77,7 @@ const ListEl = styled.li`
   justify-content: center;
 `;
 const Button = styled.button`
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 500;
   width: 100%;
   height: 40px;
