@@ -43,7 +43,6 @@ export default function MainPage() {
   return (
     <MainScreen>
       <Headers curGroup={curGroup} onGroupChange={setCurGroup} />
-      <p>Current group is {curGroup}</p>
       <CurrentList
         products={products}
         curGroup={curGroup}
@@ -54,8 +53,8 @@ export default function MainPage() {
 }
 
 const MainScreen = styled.div`
-  margin-top: -16px;
+  /* margin-top: -16px;
   width: 100vw;
   height: 100vh;
-  background-color: #ffe32aaa;
+  background-color: #ffe32aaa; */
 `;

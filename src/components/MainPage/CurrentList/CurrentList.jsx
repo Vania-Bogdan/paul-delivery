@@ -62,24 +62,31 @@ const CurrentList = ({ products, curGroup }) => {
       });
   };
 
-  const handleReload = () => {
-    window.location.reload();
-  };
+  // const handleReload = () => {
+  //   window.location.reload();
+  // };
 
   return (
     <>
-      <button onClick={handleReload}>Save</button>
+      {/* <button onClick={handleReload}>Save</button> */}
       <Ul>
         {productList.map(({ name, quantity, id }) => (
-          <li key={id}>
-            <p>{id + '. ' + name + ': ' + quantity + ' Im from group '}</p>
-            <button onClick={() => editProductQuantity(id, quantity, false)}>
-              -
-            </button>
-            <button onClick={() => editProductQuantity(id, quantity, true)}>
-              +
-            </button>
-          </li>
+          <ProductBox key={id}>
+            <MainText>{id + '.' + name}</MainText>
+            <ChangeQuantityBox>
+              <ChangeQuantityBtn
+                onClick={() => editProductQuantity(id, quantity, false)}
+              >
+                -
+              </ChangeQuantityBtn>
+              <QuantityText>{quantity}</QuantityText>
+              <ChangeQuantityBtn
+                onClick={() => editProductQuantity(id, quantity, true)}
+              >
+                +
+              </ChangeQuantityBtn>
+            </ChangeQuantityBox>
+          </ProductBox>
         ))}
       </Ul>
     </>
@@ -97,7 +104,53 @@ const CurrentList = ({ products, curGroup }) => {
 // };
 
 const Ul = styled.ul`
-  padding: 0 0 0 10px;
+  padding: 12px 12px 12px 12px;
+  margin-top: 40px;
+  li:not(:last-child) {
+    margin-bottom: 10px;
+  }
+`;
+
+const ProductBox = styled.li`
+  display: flex;
+  justify-content: space-between;
+`;
+
+const MainText = styled.p`
+  font-family: Verdana, Geneva, Tahoma, monospace;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+`;
+
+const ChangeQuantityBox = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+const QuantityText = styled.p`
+  font-family: Verdana, Geneva, Tahoma, monospace;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+  width: 20px;
+  display: flex;
+  justify-content: center;
+`;
+
+const ChangeQuantityBtn = styled.button`
+  font-family: Verdana, Geneva, Tahoma, monospace;
+  font-size: 22px;
+  font-weight: 500;
+  margin: 0 3px;
+  padding: 0 0 2px 1px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid rgba(0, 0, 0);
+  border-radius: 5px;
 `;
 
 export default CurrentList;

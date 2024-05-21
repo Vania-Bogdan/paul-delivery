@@ -2,7 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 class Headers extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      h: 'W1',
+    };
+  }
+
   handleClick = newGroup => {
+    this.setState({ h: newGroup });
     this.props.onGroupChange(newGroup);
   };
 
@@ -10,16 +18,40 @@ class Headers extends React.Component {
     return (
       <List>
         <ListEl>
-          <Button onClick={() => this.handleClick('W1')}>W1</Button>
+          {this.state.h === 'W1' ? (
+            <ActiveButton onClick={() => this.handleClick('W1')}>
+              W1
+            </ActiveButton>
+          ) : (
+            <Button onClick={() => this.handleClick('W1')}>W1</Button>
+          )}
         </ListEl>
         <ListEl>
-          <Button onClick={() => this.handleClick('W2')}>W2</Button>
+          {this.state.h === 'W2' ? (
+            <ActiveButton onClick={() => this.handleClick('W2')}>
+              W2
+            </ActiveButton>
+          ) : (
+            <Button onClick={() => this.handleClick('W2')}>W2</Button>
+          )}
         </ListEl>
         <ListEl>
-          <Button onClick={() => this.handleClick('So')}>So</Button>
+          {this.state.h === 'So' ? (
+            <ActiveButton onClick={() => this.handleClick('So')}>
+              So
+            </ActiveButton>
+          ) : (
+            <Button onClick={() => this.handleClick('So')}>So</Button>
+          )}
         </ListEl>
         <ListEl>
-          <Button onClick={() => this.handleClick('Costa')}>Costa</Button>
+          {this.state.h === 'Costa' ? (
+            <ActiveButton onClick={() => this.handleClick('Costa')}>
+              Costa
+            </ActiveButton>
+          ) : (
+            <Button onClick={() => this.handleClick('Costa')}>Costa</Button>
+          )}
         </ListEl>
       </List>
     );
@@ -27,26 +59,42 @@ class Headers extends React.Component {
 }
 
 const List = styled.ul`
-  width: 100vw;
   display: flex;
   justify-content: space-between;
-  background-color: blueviolet;
+  background-color: #f7f7f7;
   padding: 0;
   list-style-type: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  margin: 0;
+  /* box-shadow: 0 6px 20px 0px rgba(0, 0, 0); */
 `;
 const ListEl = styled.li`
-  font-size: 32px;
-  font-weight: 700;
   flex-grow: 1;
-  margin: 10px;
-  color: #ff8c00;
-  background-color: aquamarine;
   display: flex;
   justify-content: center;
 `;
 const Button = styled.button`
+  font-size: 30px;
+  font-weight: 500;
   width: 100%;
-  background-color: #ff7fc5;
+  height: 40px;
+  border: 0;
+  background-color: #1c1c1c;
+  color: #f7f7f7;
+  box-shadow: 0 0px 20px -5px rgba(0, 0, 0);
+`;
+const ActiveButton = styled.button`
+  z-index: 2;
+  font-size: 30px;
+  font-weight: 500;
+  width: 100%;
+  height: 40px;
+  border: 0;
+  background-color: #f7f7f7;
+  color: #1c1c1c;
 `;
 
 export default Headers;
