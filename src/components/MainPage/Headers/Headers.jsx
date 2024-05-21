@@ -70,7 +70,6 @@ const List = styled.ul`
   right: 0;
   margin: 0;
   width: 100vw;
-  /* box-shadow: 0 6px 20px 0px rgba(0, 0, 0); */
 `;
 const ListEl = styled.li`
   flex-grow: 1;
