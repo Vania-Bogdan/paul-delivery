@@ -74,11 +74,20 @@ const CurrentList = ({ products, curGroup }) => {
           <ProductBox key={id}>
             <MainText>{id + '.' + name}</MainText>
             <ChangeQuantityBox>
-              <ChangeQuantityBtn
-                onClick={() => editProductQuantity(id, quantity, false)}
-              >
-                -
-              </ChangeQuantityBtn>
+              {quantity === 0 ? (
+                <ChangeQuantityBtn
+                  onClick={() => editProductQuantity(id, quantity, false)}
+                  disabled
+                >
+                  -
+                </ChangeQuantityBtn>
+              ) : (
+                <ChangeQuantityBtn
+                  onClick={() => editProductQuantity(id, quantity, false)}
+                >
+                  -
+                </ChangeQuantityBtn>
+              )}
               <QuantityText>{quantity}</QuantityText>
               <ChangeQuantityBtn
                 onClick={() => editProductQuantity(id, quantity, true)}
