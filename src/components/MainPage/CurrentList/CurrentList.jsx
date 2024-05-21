@@ -5,16 +5,22 @@ import styled from 'styled-components';
 
 const CurrentList = ({ products, curGroup }) => {
   const [productList, setProductList] = useState([]);
-  let curUrl = 'https://631de489789612cd07b2575a.mockapi.io/';
+  let curUrl = '';
   switch (curGroup) {
     case 'W1':
-      curUrl += 'W1_products';
+      curUrl += 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
       break;
     case 'W2':
-      curUrl += 'W2_products';
+      curUrl += 'https://631de489789612cd07b2575a.mockapi.io/W2_products';
+      break;
+    case 'So':
+      curUrl += 'https://664ce9a3ede9a2b55652113d.mockapi.io/so_coffee';
+      break;
+    case 'Costa':
+      curUrl += 'https://664ce9a3ede9a2b55652113d.mockapi.io/costa_coffee';
       break;
     default:
-      curUrl += 'W2_products';
+      curUrl += 'W1_products';
   }
 
   useEffect(() => {
