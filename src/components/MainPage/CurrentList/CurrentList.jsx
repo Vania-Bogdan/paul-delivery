@@ -151,6 +151,7 @@ const ChangeQuantityBtn = styled.button`
   height: 28px;
   border: 1px solid rgba(0, 0, 0);
   border-radius: 5px;
+  color: #1c1c1c;
 `;
 
 export default CurrentList;
