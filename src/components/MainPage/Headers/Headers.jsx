@@ -88,7 +88,7 @@ const Button = styled.button`
 `;
 const ActiveButton = styled.button`
   z-index: 2;
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 500;
   width: 100%;
   height: 40px;
