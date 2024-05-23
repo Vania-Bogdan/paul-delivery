@@ -68,13 +68,21 @@ const CurrentList = ({ products, curGroup }) => {
       });
   };
 
-  // const handleReload = () => {
-  //   window.location.reload();
-  // };
+  let allNeeded = 0;
+
+  productList.forEach(product => {
+    if (product.quantity > 0) {
+      allNeeded++;
+    }
+  });
+
+  //скасування всіх продуктів
 
   return (
     <>
       {/* <button onClick={handleReload}>Save</button> */}
+      <AllNeededBox>{allNeeded}</AllNeededBox>
+      {/*хай буде*/}
       <Ul>
         {productList.map(({ name, quantity, id }) => (
           <ProductBox key={id}>
@@ -100,6 +108,7 @@ const CurrentList = ({ products, curGroup }) => {
               >
                 +
               </ChangeQuantityBtn>
+              {quantity > 0 ? <IsNeeded></IsNeeded> : <></>}
             </ChangeQuantityBox>
           </ProductBox>
         ))}
@@ -120,7 +129,8 @@ const CurrentList = ({ products, curGroup }) => {
 
 const Ul = styled.ul`
   padding: 12px 12px 12px 12px;
-  margin-top: 40px;
+  margin-top: 0;
+  z-index: 20;
   li:not(:last-child) {
     margin-bottom: 10px;
   }
@@ -164,9 +174,32 @@ const ChangeQuantityBtn = styled.button`
   align-items: center;
   width: 28px;
   height: 28px;
-  border: 1px solid rgba(0, 0, 0);
+  border: 1px solid #1c1c1c;
   border-radius: 5px;
   color: #1c1c1c;
+`;
+
+const IsNeeded = styled.div`
+  height: 25px;
+  width: 5px;
+  background-color: #00c300;
+  position: absolute;
+  right: 5px;
+  z-index: 1;
+`;
+
+const AllNeededBox = styled.div`
+  margin-top: 45px;
+  width: 100%;
+  height: 30px;
+  /* background-color: #00c3009f; */
+  /* border: 2px solid #1c1c1c; */
+  /* border-radius: 10px; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 26px;
+  /* z-index: 1; */
 `;
 
 export default CurrentList;

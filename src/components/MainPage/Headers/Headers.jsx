@@ -59,6 +59,7 @@ class Headers extends React.Component {
 }
 
 const List = styled.ul`
+  z-index: 10;
   display: flex;
   justify-content: space-between;
   background-color: #f7f7f7;
@@ -77,6 +78,7 @@ const ListEl = styled.li`
   justify-content: center;
 `;
 const Button = styled.button`
+  /* z-index: 2; */
   font-size: 26px;
   font-weight: 500;
   width: 100%;
@@ -87,7 +89,7 @@ const Button = styled.button`
   box-shadow: 0 0px 20px -5px rgba(0, 0, 0);
 `;
 const ActiveButton = styled.button`
-  z-index: 2;
+  z-index: 3;
   font-size: 26px;
   font-weight: 500;
   width: 100%;
