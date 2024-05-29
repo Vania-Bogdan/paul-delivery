@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/paul-delivery/static/css/main.ee583251.css",
-    "main.js": "/paul-delivery/static/js/main.0af3397f.js",
+    "main.js": "/paul-delivery/static/js/main.ac8a3aab.js",
     "index.html": "/paul-delivery/index.html",
     "main.ee583251.css.map": "/paul-delivery/static/css/main.ee583251.css.map",
-    "main.0af3397f.js.map": "/paul-delivery/static/js/main.0af3397f.js.map"
+    "main.ac8a3aab.js.map": "/paul-delivery/static/js/main.ac8a3aab.js.map"
   },
   "entrypoints": [
     "static/css/main.ee583251.css",
-    "static/js/main.0af3397f.js"
+    "static/js/main.ac8a3aab.js"
   ]
 }
