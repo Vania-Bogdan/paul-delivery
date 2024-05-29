@@ -1,26 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-
 import styled from 'styled-components';
+import { Audio } from 'react-loader-spinner';
 
 const CurrentList = ({ products, curGroup }) => {
   const [productList, setProductList] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
   let curUrl = '';
   switch (curGroup) {
     case 'W1':
-      curUrl += 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
+      curUrl = 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
       break;
     case 'W2':
-      curUrl += 'https://631de489789612cd07b2575a.mockapi.io/W2_products';
+      curUrl = 'https://631de489789612cd07b2575a.mockapi.io/W2_products';
       break;
     case 'So':
-      curUrl += 'https://664ce9a3ede9a2b55652113d.mockapi.io/so_coffee';
+      curUrl = 'https://664ce9a3ede9a2b55652113d.mockapi.io/so_coffee';
       break;
     case 'Costa':
-      curUrl += 'https://664ce9a3ede9a2b55652113d.mockapi.io/costa_coffee';
+      curUrl = 'https://664ce9a3ede9a2b55652113d.mockapi.io/costa_coffee';
       break;
     default:
-      curUrl += 'W1_products';
+      curUrl = 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
   }
 
   useEffect(() => {
@@ -50,7 +53,7 @@ const CurrentList = ({ products, curGroup }) => {
       quantity: newQ,
     };
 
-    const url = curUrl + '/' + itemId;
+    const url = `${curUrl}/${itemId}`;
 
     axios
       .put(url, updatedData)
@@ -68,6 +71,35 @@ const CurrentList = ({ products, curGroup }) => {
       });
   };
 
+  const cancelAllProducts = async () => {
+    try {
+      const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
+
+      setIsLoading(true);
+
+      // Проходимо через всі продукти з асинхронною затримкою
+      for (const pro of productList) {
+        if (pro.quantity !== 0) {
+          await axios.put(`${curUrl}/${pro.id}`, { quantity: 0 });
+          console.log(`${pro.name} анульовано`);
+          await delay(100);
+        }
+      }
+
+      console.log('Всі продукти анульовано');
+
+      // Оновлюємо стан продуктів
+      setProductList(prevProducts =>
+        prevProducts.map(pro => ({ ...pro, quantity: 0 }))
+      );
+      setIsLoading(false);
+    } catch (error) {
+      console.error('Помилка під час анулювання всіх продуктів:', error);
+    }
+
+    setShowModal(false);
+  };
+
   let allNeeded = 0;
 
   productList.forEach(product => {
@@ -76,39 +108,55 @@ const CurrentList = ({ products, curGroup }) => {
     }
   });
 
-  //скасування всіх продуктів
-
   return (
     <>
-      {/* <button onClick={handleReload}>Save</button> */}
-      <AllNeededBox>{allNeeded}</AllNeededBox>
-      {/*хай буде*/}
+      {isLoading && (
+        <LoaderBox>
+          <Audio
+            height="100"
+            radius="20"
+            color="darkslategray"
+            ariaLabel="loading"
+            wrapperStyle
+            wrapperClass
+          />
+        </LoaderBox>
+      )}
+      <AllNeededBox>
+        <AllNeededText>{allNeeded}</AllNeededText>
+        <CancelAllBtn onClick={() => setShowModal(true)}>
+          Wyzeruj wszystko
+        </CancelAllBtn>
+        {showModal && (
+          <Modal>
+            <ModalContent>
+              <p>Czy na pewno chcesz wyzerować wszystkie produkty?</p>
+              <ChoiseOfCancelling>
+                <button onClick={cancelAllProducts}>Tak, wyzeruj</button>
+                <button onClick={() => setShowModal(false)}>Cofnij</button>
+              </ChoiseOfCancelling>
+            </ModalContent>
+          </Modal>
+        )}
+      </AllNeededBox>
       <Ul>
         {productList.map(({ name, quantity, id }) => (
           <ProductBox key={id}>
             <MainText>{id + '.' + name}</MainText>
             <ChangeQuantityBox>
-              {quantity === 0 ? (
-                <ChangeQuantityBtn
-                  onClick={() => editProductQuantity(id, quantity, false)}
-                  disabled
-                >
-                  -
-                </ChangeQuantityBtn>
-              ) : (
-                <ChangeQuantityBtn
-                  onClick={() => editProductQuantity(id, quantity, false)}
-                >
-                  -
-                </ChangeQuantityBtn>
-              )}
+              <ChangeQuantityBtn
+                onClick={() => editProductQuantity(id, quantity, false)}
+                disabled={quantity === 0}
+              >
+                -
+              </ChangeQuantityBtn>
               <QuantityText>{quantity}</QuantityText>
               <ChangeQuantityBtn
                 onClick={() => editProductQuantity(id, quantity, true)}
               >
                 +
               </ChangeQuantityBtn>
-              {quantity > 0 ? <IsNeeded></IsNeeded> : <></>}
+              {quantity > 0 && <IsNeeded />}
             </ChangeQuantityBox>
           </ProductBox>
         ))}
@@ -117,18 +165,8 @@ const CurrentList = ({ products, curGroup }) => {
   );
 };
 
-// ContactList.propTypes = {
-//   contacts: PropTypes.arrayOf(
-//     PropTypes.shape({
-//       name: PropTypes.string.isRequired,
-//       number: PropTypes.string.isRequired,
-//       id: PropTypes.string.isRequired,
-//     })
-//   ),
-// };
-
 const Ul = styled.ul`
-  padding: 12px 12px 12px 12px;
+  padding: 12px;
   margin-top: 0;
   z-index: 20;
   li:not(:last-child) {
@@ -189,17 +227,66 @@ const IsNeeded = styled.div`
 `;
 
 const AllNeededBox = styled.div`
-  margin-top: 45px;
+  margin-top: 50px;
   width: 100%;
   height: 30px;
-  /* background-color: #00c3009f; */
-  /* border: 2px solid #1c1c1c; */
-  /* border-radius: 10px; */
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+`;
+
+const AllNeededText = styled.p`
+  font-size: 26px;
+  margin-left: 70px;
+`;
+
+const CancelAllBtn = styled.button`
+  font-family: Verdana, Geneva, Tahoma, monospace;
+  font-size: 14px;
+  font-weight: 400;
+  /* width: 40%; */
+  border: 1px solid #1c1c1c;
+  border-radius: 5px;
+  color: #bc0000;
+  padding: 5px;
+  margin-left: auto;
+  margin-right: 12px;
+`;
+
+const Modal = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 26px;
-  /* z-index: 1; */
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+`;
+
+const ModalContent = styled.div`
+  background-color: white;
+  padding: 15px;
+  border: 1px solid #888;
+  border-radius: 20px;
+  width: 80%;
+  max-width: 400px;
+  text-align: center;
+`;
+
+const ChoiseOfCancelling = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+`;
+
+const LoaderBox = styled.div`
+  position: absolute;
+  right: 40%;
+  left: 40%;
+  bottom: 20%;
 `;
 
 export default CurrentList;
