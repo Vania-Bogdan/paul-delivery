@@ -17,19 +17,20 @@ const CurrentList = ({ products, curGroup }) => {
       curUrl = 'https://631de489789612cd07b2575a.mockapi.io/W2_products';
       break;
     case 'So':
-      curUrl = 'https://664ce9a3ede9a2b55652113d.mockapi.io/so_coffee';
+      curUrl = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1';
       break;
     case 'Costa':
       curUrl = 'https://664ce9a3ede9a2b55652113d.mockapi.io/costa_coffee';
       break;
     default:
-      curUrl = 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
+      curUrl = 'https://664ce9a3ede9a2b55652113d.mockapi.io/lost';
   }
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(curUrl);
+
         return response.data;
       } catch (error) {
         console.error('Помилка під час виконання запиту GET:', error);
@@ -38,14 +39,22 @@ const CurrentList = ({ products, curGroup }) => {
     };
 
     const fetchData = async () => {
-      const products = await fetchProducts();
-      setProductList(products);
+      const products1 = await fetchProducts();
+      let combinedProducts = products1;
+
+      if (curUrl === 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1') {
+        curUrl = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
+        const products2 = await fetchProducts();
+        combinedProducts = [...products1, ...products2]; // Об'єднуємо продукти з двох баз
+      }
+
+      setProductList(combinedProducts); // Оновлюємо стан з об'єднаним списком продуктів
     };
 
     fetchData();
   }, [curGroup, curUrl]);
 
-  const editProductQuantity = (id, q, isToAdd) => {
+  const editProductQuantity = (id, q, isToAdd, group) => {
     const itemId = id;
     const newQ = isToAdd ? q + 1 : q - 1;
 
@@ -53,13 +62,36 @@ const CurrentList = ({ products, curGroup }) => {
       quantity: newQ,
     };
 
-    const url = `${curUrl}/${itemId}`;
+    console.log('Product from group: ' + group);
+
+    let url = '';
+    switch (group) {
+      case 'w1':
+        url = 'https://631de489789612cd07b2575a.mockapi.io/W1_products';
+        break;
+      case 'w2':
+        url = 'https://631de489789612cd07b2575a.mockapi.io/W2_products';
+        break;
+      case 'so1':
+        url = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1';
+        break;
+      case 'so2':
+        url = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
+        break;
+      case 'costa':
+        url = 'https://664ce9a3ede9a2b55652113d.mockapi.io/costa_coffee';
+        break;
+      default:
+        url = 'https://664ce9a3ede9a2b55652113d.mockapi.io/lost';
+    }
+    url += `/${itemId}`;
+
+    console.log('Final URL:', url);
 
     axios
       .put(url, updatedData)
       .then(response => {
         console.log('Запит PUT виконаний успішно:', response.data);
-        // Оновлення стану компонента після успішного виконання запиту
         setProductList(prevProducts =>
           prevProducts.map(product =>
             product.id === id ? { ...product, quantity: newQ } : product
@@ -80,9 +112,22 @@ const CurrentList = ({ products, curGroup }) => {
       // Проходимо через всі продукти з асинхронною затримкою
       for (const pro of productList) {
         if (pro.quantity !== 0) {
-          await axios.put(`${curUrl}/${pro.id}`, { quantity: 0 });
-          console.log(`${pro.name} анульовано`);
-          await delay(100);
+          let url = '';
+
+          // Визначаємо правильний URL для кожного продукту
+          if (curGroup === 'So') {
+            if (pro.id < 100) {
+              url = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1';
+            } else {
+              url = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
+            }
+          } else {
+            url = curUrl;
+          }
+
+          await axios.put(`${url}/${pro.id}`, { quantity: 0 });
+          console.log(`${pro.name} з URL ${url} анульовано`);
+          await delay(100); // невелика затримка між запитами
         }
       }
 
@@ -140,19 +185,19 @@ const CurrentList = ({ products, curGroup }) => {
         )}
       </AllNeededBox>
       <Ul>
-        {productList.map(({ name, quantity, id }) => (
+        {productList.map(({ name, quantity, id, group }) => (
           <ProductBox key={id}>
             <MainText>{id + '.' + name}</MainText>
             <ChangeQuantityBox>
               <ChangeQuantityBtn
-                onClick={() => editProductQuantity(id, quantity, false)}
+                onClick={() => editProductQuantity(id, quantity, false, group)}
                 disabled={quantity === 0}
               >
                 -
               </ChangeQuantityBtn>
               <QuantityText>{quantity}</QuantityText>
               <ChangeQuantityBtn
-                onClick={() => editProductQuantity(id, quantity, true)}
+                onClick={() => editProductQuantity(id, quantity, true, group)}
               >
                 +
               </ChangeQuantityBtn>
