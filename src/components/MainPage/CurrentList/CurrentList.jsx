@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 import { Audio } from 'react-loader-spinner';
@@ -7,6 +7,8 @@ const CurrentList = ({ products, curGroup }) => {
   const [productList, setProductList] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const curUrlRef = useRef('');
 
   let curUrl = '';
   switch (curGroup) {
@@ -27,10 +29,13 @@ const CurrentList = ({ products, curGroup }) => {
   }
 
   useEffect(() => {
+    curUrlRef.current = curUrl;
+  }, [curUrl]);
+
+  useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await axios.get(curUrl);
-
+        const response = await axios.get(curUrlRef.current);
         return response.data;
       } catch (error) {
         console.error('Помилка під час виконання запиту GET:', error);
@@ -42,8 +47,12 @@ const CurrentList = ({ products, curGroup }) => {
       const products1 = await fetchProducts();
       let combinedProducts = products1;
 
-      if (curUrl === 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1') {
-        curUrl = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
+      if (
+        curUrlRef.current ===
+        'https://664ce583ede9a2b556520483.mockapi.io/so_coffee1'
+      ) {
+        curUrlRef.current =
+          'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
         const products2 = await fetchProducts();
         combinedProducts = [...products1, ...products2]; // Об'єднуємо продукти з двох баз
       }
@@ -52,7 +61,7 @@ const CurrentList = ({ products, curGroup }) => {
     };
 
     fetchData();
-  }, [curGroup, curUrl]);
+  }, [curGroup]);
 
   const editProductQuantity = (id, q, isToAdd, group) => {
     const itemId = id;
@@ -122,7 +131,7 @@ const CurrentList = ({ products, curGroup }) => {
               url = 'https://664ce583ede9a2b556520483.mockapi.io/so_coffee2';
             }
           } else {
-            url = curUrl;
+            url = curUrlRef.current;
           }
 
           await axios.put(`${url}/${pro.id}`, { quantity: 0 });
