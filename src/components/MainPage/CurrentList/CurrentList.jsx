@@ -342,7 +342,7 @@ const SwitchSlider = styled.span`
   }
 
   ${SwitchInput}:checked + & {
-    background-color: #007bff;
+    background-color: #00c300;
   }
 
   ${SwitchInput}:checked + &:before {
