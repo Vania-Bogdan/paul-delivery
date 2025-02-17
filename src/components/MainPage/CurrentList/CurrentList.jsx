@@ -8,6 +8,8 @@ const CurrentList = ({ products, curGroup }) => {
   const [showModal, setShowModal] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
+  const [showOnlyOrdered, setShowOnlyOrdered] = useState(false);
+
   const curUrlRef = useRef('');
 
   let curUrl = '';
@@ -162,6 +164,10 @@ const CurrentList = ({ products, curGroup }) => {
     }
   });
 
+  const filteredProducts = showOnlyOrdered
+    ? productList.filter(({ quantity }) => quantity > 0)
+    : productList;
+
   return (
     <>
       {isLoading && (
@@ -177,6 +183,14 @@ const CurrentList = ({ products, curGroup }) => {
         </LoaderBox>
       )}
       <AllNeededBox>
+        <SwitchLabel>
+          <SwitchInput
+            type="checkbox"
+            checked={showOnlyOrdered}
+            onChange={() => setShowOnlyOrdered(!showOnlyOrdered)}
+          />
+          <SwitchSlider />
+        </SwitchLabel>
         <AllNeededText>{allNeeded}</AllNeededText>
         <CancelAllBtn onClick={() => setShowModal(true)}>
           Wyzeruj wszystko
@@ -194,7 +208,7 @@ const CurrentList = ({ products, curGroup }) => {
         )}
       </AllNeededBox>
       <Ul>
-        {productList.map(({ name, quantity, id, group }) => (
+        {filteredProducts.map(({ name, quantity, id, group }) => (
           <ProductBox key={id}>
             <MainText>{id + '.' + name}</MainText>
             <ChangeQuantityBox>
@@ -282,16 +296,63 @@ const IsNeeded = styled.div`
 
 const AllNeededBox = styled.div`
   margin-top: 50px;
-  width: 100%;
+  /* width: 100%; */
   height: 30px;
   display: flex;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
+  padding: 0 10px 0 10px;
+`;
+
+const SwitchLabel = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 25px;
+  margin-bottom: 10px;
+`;
+
+const SwitchInput = styled.input`
+  opacity: 0;
+  width: 0;
+  height: 0;
+`;
+
+const SwitchSlider = styled.span`
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.4s;
+  border-radius: 25px;
+
+  &:before {
+    position: absolute;
+    content: '';
+    height: 18px;
+    width: 18px;
+    left: 4px;
+    bottom: 3.5px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+
+  ${SwitchInput}:checked + & {
+    background-color: #007bff;
+  }
+
+  ${SwitchInput}:checked + &:before {
+    transform: translateX(24px);
+  }
 `;
 
 const AllNeededText = styled.p`
   font-size: 26px;
-  margin-left: 70px;
+  /* margin-left: 70px; */
 `;
 
 const CancelAllBtn = styled.button`
@@ -303,8 +364,8 @@ const CancelAllBtn = styled.button`
   border-radius: 5px;
   color: #bc0000;
   padding: 5px;
-  margin-left: auto;
-  margin-right: 12px;
+  /* margin-left: auto;
+  margin-right: 12px; */
 `;
 
 const Modal = styled.div`
